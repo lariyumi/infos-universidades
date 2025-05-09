@@ -14,8 +14,8 @@ public class Curso {
     private String nome;
     @Column(nullable = false)
     private String descricao;
-    @ManyToOne
-    private Universidade universidade;
+    @ManyToMany(mappedBy = "cursos")
+    private List<Universidade> universidade;
     @OneToMany(mappedBy = "curso")
     private List<ProjetoPedagogico> projetosPedagogicos;
 
@@ -43,11 +43,11 @@ public class Curso {
         this.descricao = descricao;
     }
 
-    public Universidade getUniversidade() {
+    public List<Universidade> getUniversidade() {
         return universidade;
     }
 
-    public void setUniversidade(Universidade universidade) {
+    public void setUniversidade(List<Universidade> universidade) {
         this.universidade = universidade;
     }
 

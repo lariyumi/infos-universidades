@@ -16,10 +16,15 @@ public class Universidade {
     private String site;
     @Enumerated(EnumType.STRING)
     private TipoUniversidade tipo;
-    @OneToMany(mappedBy = "universidade")
+    @ManyToMany
+    @JoinTable(name = "universidade_curso", joinColumns = @JoinColumn(name = "universidade_id"), inverseJoinColumns = @JoinColumn(name = "curso_id"))
     private List<Curso> cursos;
     @OneToMany(mappedBy = "universidade")
     private List<Endereco> enderecos;
+    @OneToMany(mappedBy = "universidade")
+    private List<Comentario> comentarios;
+    @OneToMany(mappedBy = "universidade")
+    private List<ProjetoPedagogico> projetosPedagogicos;
 
     public Long getId() {
         return id;
@@ -67,5 +72,21 @@ public class Universidade {
 
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
+    }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public List<ProjetoPedagogico> getProjetosPedagogicos() {
+        return projetosPedagogicos;
+    }
+
+    public void setProjetosPedagogicos(List<ProjetoPedagogico> projetosPedagogicos) {
+        this.projetosPedagogicos = projetosPedagogicos;
     }
 }

@@ -17,6 +17,7 @@ public class Endereco {
     @Column(nullable = false)
     private String cidade;
     @ManyToOne
+    @JoinColumn(name = "universidade_id", nullable = false)
     private Universidade universidade;
 
     public Long getId() {

@@ -17,15 +17,8 @@ public class UniversidadesController {
 
     @GetMapping("")
     public ModelAndView index() {
-        ModelAndView mv = new ModelAndView("index");
-
-        return mv;
-    }
-
-    @GetMapping("/universidades")
-    public ModelAndView universidades() {
         List<Universidade> universidades = this.universidadeRepository.findAll(); // retorna lista com todas as universidades presentes no banco de dados
-        ModelAndView mv = new ModelAndView("universidades");
+        ModelAndView mv = new ModelAndView("index");
         mv.addObject("universidades", universidades);
 
         return mv;
