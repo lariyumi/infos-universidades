@@ -1,17 +1,13 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Cadastro de Usuário')}"></head>
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Login')}"></head>
 <body>
 <div class="container">
-    <header th:replace="~{fragments :: header('cadastro')}"></header>
-    <h1>Cadastro</h1>
+    <header th:replace="~{fragments :: header('login')}"></header>
+
+    <h1>Login</h1>
     <span th:styleappend="${mensagem == null ? 'diplay:none;' : ''}" th:classappend="mensagem != null ? 'text-danger' : ''" th:text="${mensagem != null ? mensagem : ''}">Mensagem</span>
-    <form th:object="${requisicaoFormUsuario}" th:action="@{/cadastro}" method="POST">
-        <div class="form-group mb-2 mt-2">
-            <label class="form-label">Nome</label>
-            <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{nome}" placeholder="Digite seu nome">
-            <div class="invalid-feedback" th:errors="*{nome}"></div>
-        </div>
+    <form th:object="${requisicaoLoginUsuario}" th:action="@{/login}" method="POST">
         <div class="form-group mb-2">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" th:errorclass="is-invalid" th:field="*{email}" placeholder="Digite seu e-mail">
@@ -22,8 +18,9 @@
             <input type="password" class="form-control" th:errorclass="is-invalid" th:field="*{senha}" placeholder="Digite sua senha">
             <div class="invalid-feedback" th:errors="*{senha}"></div>
         </div>
-        <button class="btn btn-primary mt-3" type="submit">Cadastrar</button>
+        <button class="btn btn-primary mt-3" type="submit">Entrar</button>
     </form>
+    <a th:href="@{/login/alteracao-senha}">Esqueci minha senha</a>
 </div>
 </body>
 </html>

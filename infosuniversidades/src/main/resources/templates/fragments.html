@@ -21,10 +21,13 @@
 <!--                <button class="btn" type="submit">Search</button>-->
 <!--            </form>-->
             <li class="nav-item">
-               <a class="nav-link" href="#">Entre</a>
+               <a class="nav-link" th:if="${session.isEmpty()}" th:href="@{/login}">Entre</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/cadastro}">Cadastre-se</a>
+                <a class="nav-link" th:if="${session.isEmpty()}" th:href="@{/cadastro}">Cadastre-se</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:if="${!session.isEmpty()}" th:href="@{/}">Perfil</a>
             </li>
         </ul>
     </nav>
