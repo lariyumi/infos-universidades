@@ -1,5 +1,6 @@
 package br.com.infosuniversidades.controllers;
 
+import br.com.infosuniversidades.dto.RequisicaoPerfilUsuario;
 import br.com.infosuniversidades.dto.RequisicaoFormUsuario;
 import br.com.infosuniversidades.dto.RequisicaoLoginUsuario;
 import br.com.infosuniversidades.models.Usuario;
@@ -9,7 +10,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,17 +86,13 @@ public class UsuarioController {
             //cria um usuário
             Optional<Usuario> usuarioLogado = this.usuarioRepository.findByEmail(requisicao.getEmail());
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(16);
-            System.out.println("************************" + usuarioLogado.isPresent());
-            System.out.println(requisicao.getSenha());
-            System.out.println(usuarioLogado.get().getSenha());
-            System.out.println(passwordEncoder.matches(requisicao.getSenha(), usuarioLogado.get().getSenha()));
 
             if (usuarioLogado.isPresent() && passwordEncoder.matches(requisicao.getSenha(), usuarioLogado.get().getSenha())) {
-                System.out.println("***************Entrou aqui");
                 HttpSession session = req.getSession(true);
-                session.setAttribute("email", usuarioLogado.get().getEmail());
-                session.setAttribute("nome", usuarioLogado.get().getNome());
-                session.setAttribute("role", usuarioLogado.get().getTipo().toString());
+                Usuario usuario = requisicao.toUsuario(usuarioLogado.get());
+                session.setAttribute("email", usuario.getEmail());
+                session.setAttribute("nome", usuario.getNome());
+                session.setAttribute("role", usuario.getTipo().toString());
 
                 return new ModelAndView("redirect:/");
             } else {
@@ -109,7 +105,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/login/alteracao-senha")
-    public ModelAndView alterarSenha(RequisicaoFormUsuario requisicao, HttpServletRequest req) {
+    public ModelAndView alterarSenha(RequisicaoLoginUsuario requisicao, HttpServletRequest req) {
         if (req.getSession(false) == null) {
             ModelAndView mv = new ModelAndView("alteracao-senha");
 
@@ -119,6 +115,103 @@ public class UsuarioController {
             mv.addObject("mensagem", "Saia da sua conta antes de tentar logar/cadastrar uma nova conta");
 
             return mv;
+        }
+    }
+
+    @PostMapping("/login/alteracao-senha")
+    public ModelAndView mudarSenha(@Valid RequisicaoLoginUsuario requisicao, BindingResult binding) {
+        if (binding.hasErrors()) {
+            return new ModelAndView("alteracao-senha");
+        } else {
+            Optional<Usuario> usuarioEncontrado = this.usuarioRepository.findByEmail(requisicao.getEmail());
+            if (usuarioEncontrado.isEmpty()) {
+                ModelAndView mv = new ModelAndView("alteracao-senha");
+                mv.addObject("mensagem", "E-mail fornecido inválido");
+
+                return mv;
+            } else {
+                Usuario usuario = requisicao.toUsuario(usuarioEncontrado.get());
+                this.usuarioRepository.save(usuario);
+                ModelAndView mv = new ModelAndView("redirect:/login");
+                mv.addObject("mensagem", "Senha alterada com sucesso");
+
+                return mv;
+            }
+        }
+    }
+
+    @GetMapping("/perfil")
+    public ModelAndView perfil(HttpServletRequest req) {
+        if (req.getSession(false) == null) {
+            ModelAndView mv = new ModelAndView("redirect:/");
+            mv.addObject("mensagem", "Entre na sua conta antes de acessar seu perfil");
+
+            return mv;
+        } else {
+            return new ModelAndView("perfil");
+        }
+    }
+
+    @GetMapping("/perfil/alterar-perfil")
+    public ModelAndView mostrarDados(@Valid RequisicaoFormUsuario requisicao, BindingResult binding, HttpServletRequest req) {
+        if (req.getSession(false) == null) {
+            ModelAndView mv = new ModelAndView("redirect:/");
+            mv.addObject("mensagem", "Entre na sua conta antes de acessar seu perfil");
+
+            return mv;
+        } else {
+            ModelAndView mv = new ModelAndView("alteracao-perfil");
+            Optional<Usuario> optional = this.usuarioRepository.findByEmail(req.getSession().getAttribute("email").toString());
+            if (optional.isPresent()){
+                Usuario usuario = optional.get();
+                mv.addObject("requisicaoPerfilUsuario", usuario);
+
+                return mv;
+            } else {
+                ModelAndView mv2 = new ModelAndView("redirect:/perfil");
+                mv2.addObject("mensagem", "Usuário não encontrado");
+
+                return mv2;
+            }
+        }
+    }
+
+    @PostMapping("/perfil/alterar-perfil")
+    public ModelAndView editar(@Valid RequisicaoPerfilUsuario requisicao, BindingResult binding, HttpServletRequest req) {
+        if (binding.hasErrors()) {
+            return new ModelAndView("alteracao-perfil");
+        }
+        else {
+            if (this.usuarioRepository.findByEmail(requisicao.getEmail()).isEmpty() || this.usuarioRepository.findByEmail(requisicao.getEmail()).get().getEmail().equals(req.getSession().getAttribute("email").toString())) {
+                Usuario usuario = new Usuario();
+                usuario.setNome(requisicao.getNome());
+                usuario.setEmail(requisicao.getEmail());
+                Optional<Usuario> optional = this.usuarioRepository.findByEmail(req.getSession().getAttribute("email").toString());
+                if (optional.isPresent()) {
+                    usuario.setId(optional.get().getId());
+                    usuario.setTipo(optional.get().getTipo());
+                    usuario.setSenha(optional.get().getSenha());
+                    this.usuarioRepository.save(usuario);
+
+                    req.getSession().setAttribute("nome", usuario.getNome());
+                    req.getSession().setAttribute("email", usuario.getEmail());
+
+                    ModelAndView mv = new ModelAndView("redirect:/perfil");
+                    mv.addObject("sucesso", "Perfil alterado com sucesso!");
+
+                    return mv;
+                } else {
+                    ModelAndView mv = new ModelAndView("alteracao-perfil");
+                    mv.addObject("mensagem", "Usuário a ser alterado não encontrado");
+
+                    return mv;
+                }
+            } else {
+                ModelAndView mv = new ModelAndView("alteracao-perfil");
+                mv.addObject("mensagem", "Já existe um usuário com o e-mail fornecido");
+
+                return mv;
+            }
         }
     }
 

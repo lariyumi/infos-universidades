@@ -7,6 +7,7 @@
 
         <h1>Universidades</h1>
         <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}" th:classappend="param.mensagem != null ? 'text-danger' : ''" th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
+        <a th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}">Cadastrar nova Universidade</a>
     </div>
 </body>
 </html>

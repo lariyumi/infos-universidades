@@ -1,0 +1,20 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP')}"></head>
+<body>
+<div class="container">
+  <header th:replace="~{fragments :: header('universidades')}"></header>
+
+  <h1>Perfil</h1>
+  <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}" th:classappend="param.mensagem != null ? 'text-danger' : ''" th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
+  <span th:styleappend="${param.sucesso == null ? 'diplay:none;' : ''}" th:classappend="param.sucesso != null ? 'text-success' : ''" th:text="${param.sucesso != null ? param.sucesso : ''}">Mensagem</span>
+  <h2>Bem-vindo(a) <span th:text="${session.nome}"></span></h2>
+
+  <p><b>Nome: </b><span th:text="${session.nome}"></span></p>
+  <p><b>E-mail: </b><span th:text="${session.email}"></span></p>
+
+  <a th:href="@{/perfil/alterar-perfil}">Editar informações</a>
+
+</div>
+</body>
+</html>

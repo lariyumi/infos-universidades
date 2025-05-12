@@ -6,6 +6,7 @@
     <header th:replace="~{fragments :: header('login')}"></header>
 
     <h1>Login</h1>
+    <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}" th:classappend="param.mensagem != null ? 'text-success' : ''" th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
     <span th:styleappend="${mensagem == null ? 'diplay:none;' : ''}" th:classappend="mensagem != null ? 'text-danger' : ''" th:text="${mensagem != null ? mensagem : ''}">Mensagem</span>
     <form th:object="${requisicaoLoginUsuario}" th:action="@{/login}" method="POST">
         <div class="form-group mb-2">
