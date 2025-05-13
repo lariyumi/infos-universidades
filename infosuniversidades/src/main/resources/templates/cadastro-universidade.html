@@ -1,0 +1,135 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Cadastro das Universidades')}"></head>
+<body>
+<div class="container">
+    <header th:replace="~{fragments :: header('universidades')}"></header>
+
+    <h1>Cadastro de Universidade</h1>
+    <span th:styleappend="${mensagem == null ? 'diplay:none;' : ''}"
+          th:classappend="mensagem != null ? 'text-danger' : ''"
+          th:text="${mensagem != null ? mensagem : ''}">Mensagem</span>
+    <form th:object="${requisicaoFormUniversidade}" th:action="@{/universidade/cadastro}" method="POST">
+        <div class="form-group mb-2 mt-2">
+            <label class="form-label">Nome</label>
+            <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{nome}"
+                   placeholder="Digite o nome da universidade">
+            <div class="invalid-feedback" th:errors="*{nome}"></div>
+        </div>
+        <div class="form-group mb-2">
+            <label class="form-label">Site</label>
+            <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{site}"
+                   placeholder="Digite o site da universidade">
+            <div class="invalid-feedback" th:errors="*{site}"></div>
+        </div>
+        <div class="form-group mb-2">
+            <label class="form-label">Tipo</label>
+            <select class="form-select mb-2" th:errorclass="is-invalid" th:field="*{tipoUniversidade}">
+                <option th:each="tipo : ${listaTipoUniversidade}" th:value="${tipo}"
+                        th:text="${tipo}"></option>
+            </select>
+            <div class="invalid-feedback" th:errors="*{tipoUniversidade}"></div>
+        </div>
+        <div id="endereco">
+            <div class="form-group" th:each="endereco, enderecoStatus : *{enderecos}">
+                <label class="form-label">Endereços</label>
+                <input type="text" class="form-control" th:errorclass="is-invalid"
+                       th:field="*{enderecos[__${enderecoStatus.index}__].cidade}"
+                       placeholder="Digite a cidade da universidade">
+                <div class="invalid-feedback" th:errors="*{enderecos[__${enderecoStatus.index}__].cidade}"></div>
+                <input type="text" class="form-control" th:errorclass="is-invalid"
+                       th:field="*{enderecos[__${enderecoStatus.index}__].bairro}"
+                       placeholder="Digite o bairro da universidade">
+                <div class="invalid-feedback" th:errors="*{enderecos[__${enderecoStatus.index}__].bairro}"></div>
+                <input type="text" class="form-control" th:errorclass="is-invalid"
+                       th:field="*{enderecos[__${enderecoStatus.index}__].rua}"
+                       placeholder="Digite a rua da universidade">
+                <div class="invalid-feedback" th:errors="*{enderecos[__${enderecoStatus.index}__].rua}"></div>
+                <input type="text" class="form-control" th:errorclass="is-invalid"
+                       th:field="*{enderecos[__${enderecoStatus.index}__].numero}"
+                       placeholder="Digite o número da universidade">
+                <div class="invalid-feedback" th:errors="*{enderecos[__${enderecoStatus.index}__].numero}"></div>
+            </div>
+        </div>
+        <button class="btn btn-primary" type="button" id="addNovosCampos"><img src="../static/images/mais.png"
+                                                                               width="50px"
+                                                                               th:src="@{/images/mais.png}"></button>
+        <button class="btn btn-primary mt-3" type="submit">Cadastrar Universidade</button>
+    </form>
+
+</div>
+<script type="text/javascript">
+    var cont = 0
+    var formEndereco = document.getElementById('endereco');
+
+    document.getElementById('addNovosCampos').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        var newDiv = document.createElement('div');
+        newDiv.setAttribute('id', 'div' + String(cont));
+
+        formEndereco.appendChild(newDiv);
+
+        var newFieldCidade = document.createElement('input');
+        newFieldCidade.setAttribute('type','text');
+        newFieldCidade.setAttribute('name','enderecos[' + cont + '].cidade');
+        newFieldCidade.setAttribute('id','enderecos[' + cont + '].cidade');
+        newFieldCidade.setAttribute('placeholder','Digite a cidade da universidade');
+        newFieldCidade.setAttribute('class','form-control mb-2');
+
+        var newFieldBairro = document.createElement('input');
+        newFieldBairro.setAttribute('type','text');
+        newFieldBairro.setAttribute('name','enderecos[' + cont + '].bairro');
+        newFieldBairro.setAttribute('id','enderecos[' + cont + '].bairro');
+        newFieldBairro.setAttribute('placeholder','Digite o bairro da universidade');
+        newFieldBairro.setAttribute('class','form-control mb-2');
+
+        var newFieldRua = document.createElement('input');
+        newFieldRua.setAttribute('type','text');
+        newFieldRua.setAttribute('name','enderecos[' + cont + '].rua');
+        newFieldRua.setAttribute('id','enderecos[' + cont + '].rua');
+        newFieldRua.setAttribute('placeholder','Digite a rua da universidade');
+        newFieldRua.setAttribute('class','form-control mb-2');
+
+        var newFieldNumero = document.createElement('input');
+        newFieldNumero.setAttribute('type','text');
+        newFieldNumero.setAttribute('name','enderecos[' + cont + '].numero');
+        newFieldNumero.setAttribute('id','enderecos[' + cont + '].numero');
+        newFieldNumero.setAttribute('placeholder','Digite o numero da universidade');
+        newFieldNumero.setAttribute('class','form-control mb-2');
+
+        var newFieldRemover = document.createElement('button');
+        newFieldRemover.setAttribute('type','button');
+        newFieldRemover.setAttribute('id','remover' + cont);
+        newFieldRemover.setAttribute('class','btn btn-primary mb-2');
+
+        var newFieldImage = document.createElement('img');
+        newFieldImage.setAttribute('src', '/images/menos.png');
+        newFieldImage.setAttribute('width', '50px');
+        newFieldImage.setAttribute('id','imgRemv' + cont);
+
+        newFieldRemover.appendChild(newFieldImage);
+
+        newDiv.appendChild(newFieldCidade);
+        newDiv.appendChild(newFieldBairro);
+        newDiv.appendChild(newFieldRua);
+        newDiv.appendChild(newFieldNumero);
+        newDiv.appendChild(newFieldRemover);
+
+        document.getElementById('remover' + cont).addEventListener('click', function(event) {
+            event.preventDefault();
+
+            var removerDiv = document.getElementById('endereco');
+
+            var elementoClicado = event.target.id;
+            var nome = 'div' + elementoClicado[7];
+
+            removerDiv.removeChild(document.getElementById(nome));
+        });
+
+        cont += 1;
+
+    });
+</script>
+</body>
+</html>

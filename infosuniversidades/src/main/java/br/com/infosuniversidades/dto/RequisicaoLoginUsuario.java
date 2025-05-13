@@ -55,7 +55,6 @@ public class RequisicaoLoginUsuario {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
         String senhaCriptografada = encoder.encode(this.senha);
         usuario.setSenha(senhaCriptografada);
-        usuario.setTipo(TipoUsuario.COMUM);
 
         return usuario;
     }

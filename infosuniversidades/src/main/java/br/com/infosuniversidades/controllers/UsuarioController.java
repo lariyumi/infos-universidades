@@ -90,9 +90,9 @@ public class UsuarioController {
             if (usuarioLogado.isPresent() && passwordEncoder.matches(requisicao.getSenha(), usuarioLogado.get().getSenha())) {
                 HttpSession session = req.getSession(true);
                 Usuario usuario = requisicao.toUsuario(usuarioLogado.get());
-                session.setAttribute("email", usuario.getEmail());
-                session.setAttribute("nome", usuario.getNome());
-                session.setAttribute("role", usuario.getTipo().toString());
+                session.setAttribute("email", usuarioLogado.get().getEmail());
+                session.setAttribute("nome", usuarioLogado.get().getNome());
+                session.setAttribute("role", usuarioLogado.get().getTipo().toString());
 
                 return new ModelAndView("redirect:/");
             } else {
@@ -130,8 +130,7 @@ public class UsuarioController {
 
                 return mv;
             } else {
-                Usuario usuario = requisicao.toUsuario(usuarioEncontrado.get());
-                this.usuarioRepository.save(usuario);
+                this.usuarioRepository.save(usuarioEncontrado.get());
                 ModelAndView mv = new ModelAndView("redirect:/login");
                 mv.addObject("mensagem", "Senha alterada com sucesso");
 
