@@ -40,6 +40,12 @@ public class UsuarioController {
 
     @PostMapping("/cadastro")
     public ModelAndView criar(@Valid RequisicaoFormUsuario requisicao, BindingResult binding, HttpServletRequest req) {
+        if (req.getSession(false) != null) {
+            ModelAndView mv = new ModelAndView("redirect:/");
+            mv.addObject("mensagem", "Saia da sua conta antes de tentar cadastrar uma nova conta");
+
+            return mv;
+        }
         if (binding.hasErrors()) {
             return new ModelAndView("cadastro");
         } else {
@@ -80,6 +86,12 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ModelAndView logar(@Valid RequisicaoLoginUsuario requisicao, BindingResult binding, HttpServletRequest req) {
+        if (req.getSession(false) != null) {
+            ModelAndView mv = new ModelAndView("redirect:/");
+            mv.addObject("mensagem", "Saia da sua conta antes de tentar se logar em outra conta");
+
+            return mv;
+        }
         if (binding.hasErrors()) {
             return new ModelAndView("login");
         } else {
@@ -177,6 +189,12 @@ public class UsuarioController {
 
     @PostMapping("/perfil/alterar-perfil")
     public ModelAndView editar(@Valid RequisicaoPerfilUsuario requisicao, BindingResult binding, HttpServletRequest req) {
+        if (req.getSession(false) == null) {
+            ModelAndView mv = new ModelAndView("redirect:/");
+            mv.addObject("mensagem", "Entre na sua conta antes de acessar seu perfil");
+
+            return mv;
+        }
         if (binding.hasErrors()) {
             return new ModelAndView("alteracao-perfil");
         }

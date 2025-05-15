@@ -1,0 +1,23 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Universidade')}"></head>
+<body>
+<div class="container">
+
+    <header th:replace="~{fragments :: header('universidades')}"></header>
+
+    <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/universidade/cadastro/curso}">Cadastrar novo Curso</a>
+    <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/{id}/editar(id = ${universidade.id})}">Editar Universidade</a>
+    <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/{id}/excluir(id = ${universidade.id})}">Excluir universidade</a>
+
+    <h1 th:text="${universidade.nome}"></h1>
+
+    <p><b>Site: </b><span th:text="${universidade.site}"></span></p>
+    <p><b>Tipo: </b><span th:text="${universidade.tipo}"></span></p>
+    <div th:each="endereco, enderecoStatus : ${enderecos}">
+        <p><b th:text="'Endereço ' + (${enderecoStatus.index} + 1) + ': '"></b><span th:text="${endereco.rua} + ', ' + ${endereco.numero} + ' - ' + ${endereco.bairro} + ' - ' + ${endereco.cidade}"></span></p>
+    </div>
+
+</div>
+</body>
+</html>

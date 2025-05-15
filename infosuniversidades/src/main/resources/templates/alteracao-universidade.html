@@ -1,15 +1,17 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
-<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Cadastro das Universidades')}"></head>
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Universidade')}"></head>
 <body>
 <div class="container">
+
     <header th:replace="~{fragments :: header('universidades')}"></header>
 
-    <h1>Cadastro de Universidade</h1>
+    <h1 th:text="'Edição de Dados de ' + ${nome}"></h1>
+
     <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}"
           th:classappend="param.mensagem != null ? 'text-danger' : ''"
           th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
-    <form th:object="${requisicaoFormUniversidade}" th:action="@{/universidade/cadastro}" method="POST">
+    <form th:object="${requisicaoFormUniversidade}" th:action="@{/{id}/editar(id = ${id})}" method="POST">
         <div class="form-group mb-2 mt-2">
             <label class="form-label">Nome</label>
             <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{nome}"
@@ -26,12 +28,14 @@
             <label class="form-label">Tipo</label>
             <select class="form-select mb-2" th:errorclass="is-invalid" th:field="*{tipoUniversidade}">
                 <option th:each="tipo : ${listaTipoUniversidade}" th:value="${tipo}"
-                        th:text="${tipo}"></option>
+                        th:text="${tipo}">>
+                </option>
             </select>
             <div class="invalid-feedback" th:errors="*{tipoUniversidade}"></div>
         </div>
         <div id="endereco">
-            <div class="form-group" th:each="endereco, enderecoStatus : *{enderecos}">
+            <div class="form-group"
+                 th:each="endereco, enderecoStatus : *{enderecos}">
                 <label class="form-label">Endereços</label>
                 <input type="text" class="form-control" th:errorclass="is-invalid"
                        th:field="*{enderecos[__${enderecoStatus.index}__].cidade}"
@@ -49,16 +53,20 @@
                        th:field="*{enderecos[__${enderecoStatus.index}__].numero}"
                        placeholder="Digite o número da universidade">
                 <div class="invalid-feedback" th:errors="*{enderecos[__${enderecoStatus.index}__].numero}"></div>
+                <button class="btn btn-danger remover-endereco" type="button"
+                        th:attr="data-id=${enderecoStatus.index}"><img
+                        src="../static/images/menos.png" width="50px" th:src="@{/images/menos.png}"></button>
             </div>
+
         </div>
         <button class="btn btn-primary" type="button" id="addNovosCampos"><img src="../static/images/mais.png"
                                                                                width="50px"
                                                                                th:src="@{/images/mais.png}"></button>
-        <button class="btn btn-primary mt-3" type="submit">Cadastrar Universidade</button>
+        <button class="btn btn-primary mt-3" type="submit">Editar Universidade</button>
     </form>
 
 </div>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
     let contadorCampos = [[${#lists.size(requisicaoFormUniversidade.enderecos)}]] || 0; // começa do tamanho atual
 
     document.getElementById('addNovosCampos').addEventListener('click', function (event) {
