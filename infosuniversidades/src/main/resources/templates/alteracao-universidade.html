@@ -6,7 +6,8 @@
 
     <header th:replace="~{fragments :: header('universidades')}"></header>
 
-    <h1 th:text="'Edição de Dados de ' + ${nome}"></h1>
+    <h1 th:text="'Edição de Dados de ' + ${requisicaoFormUniversidade.nome}"></h1>
+    <span th:styleappend="${mensagem == null ? 'diplay:none;' : ''}" th:classappend="mensagem != null ? 'text-danger' : ''" th:text="${mensagem != null ? mensagem : ''}">Mensagem</span>
 
     <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}"
           th:classappend="param.mensagem != null ? 'text-danger' : ''"
@@ -35,7 +36,7 @@
         </div>
         <div id="endereco">
             <div class="form-group"
-                 th:each="endereco, enderecoStatus : *{enderecos}">
+                 th:each="endereco, enderecoStatus : *{enderecos}" th:id="'endereco' + ${enderecoStatus.index}">
                 <label class="form-label">Endereços</label>
                 <input type="text" class="form-control" th:errorclass="is-invalid"
                        th:field="*{enderecos[__${enderecoStatus.index}__].cidade}"
@@ -57,7 +58,6 @@
                         th:attr="data-id=${enderecoStatus.index}"><img
                         src="../static/images/menos.png" width="50px" th:src="@{/images/menos.png}"></button>
             </div>
-
         </div>
         <button class="btn btn-primary" type="button" id="addNovosCampos"><img src="../static/images/mais.png"
                                                                                width="50px"

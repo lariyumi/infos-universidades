@@ -5,9 +5,12 @@ import br.com.infosuniversidades.dto.RequisicaoFormUsuario;
 import br.com.infosuniversidades.dto.RequisicaoLoginUsuario;
 import br.com.infosuniversidades.models.Usuario;
 import br.com.infosuniversidades.repositories.UsuarioRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -160,6 +163,22 @@ public class UsuarioController {
             return mv;
         } else {
             return new ModelAndView("perfil");
+        }
+    }
+
+    @GetMapping("/perfil/sair")
+    public ModelAndView sairPerfil(HttpServletRequest req, HttpServletResponse response) {
+        if (req.getSession(false) == null) {
+            return new ModelAndView("redirect:/").addObject("mensagem", "É necessário estar logado para sair da conta");
+        } else {
+            req.getSession(false).invalidate();
+
+            Cookie cookie = new Cookie("JSESSIONID", null);
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+
+            return new ModelAndView("redirect:/").addObject("sucesso", "Você foi deslogado com sucesso");
         }
     }
 

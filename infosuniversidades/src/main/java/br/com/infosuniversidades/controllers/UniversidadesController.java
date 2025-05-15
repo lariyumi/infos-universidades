@@ -2,17 +2,14 @@ package br.com.infosuniversidades.controllers;
 
 import br.com.infosuniversidades.dto.RequisicaoFormCurso;
 import br.com.infosuniversidades.dto.RequisicaoFormUniversidade;
-import br.com.infosuniversidades.models.Endereco;
-import br.com.infosuniversidades.models.TipoUniversidade;
-import br.com.infosuniversidades.models.Universidade;
-import br.com.infosuniversidades.models.Usuario;
-import br.com.infosuniversidades.repositories.EnderecoRepository;
-import br.com.infosuniversidades.repositories.UniversidadeRepository;
-import br.com.infosuniversidades.repositories.UsuarioRepository;
+import br.com.infosuniversidades.models.*;
+import br.com.infosuniversidades.repositories.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
+
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Controller
 public class UniversidadesController {
@@ -33,6 +32,12 @@ public class UniversidadesController {
 
     @Autowired
     private EnderecoRepository enderecoRepository;
+
+    @Autowired
+    private ProjetoPedagogicoRepository projetoPedagogicoRepository;
+
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @GetMapping("")
     public ModelAndView index(HttpServletRequest req) {
@@ -163,6 +168,7 @@ public class UniversidadesController {
                 requisicao.fromUniversidade(universidade, enderecos);
 
                 mv.addObject("requisicaoFormUniversidade", requisicao);
+                mv.addObject("id", universidade.getId());
 
                 return mv;
             } else {
@@ -186,35 +192,79 @@ public class UniversidadesController {
             return mv;
         } else {
             Optional<Universidade> optional = this.universidadeRepository.findById(id);
+            List<Endereco> enderecos = new ArrayList<>(requisicao.getEnderecos());
+            enderecos.removeIf(e -> e == null || (isBlank(e.getCidade()) && isBlank(e.getBairro()) && isBlank(e.getRua())));
+            if (enderecos.isEmpty()) {
+                return new ModelAndView("alteracao-universidade").addObject("mensagem", "Por favor, coloque pelo menos um endereço").addObject("listaTipoUniversidade", TipoUniversidade.values());
+            }
             if (optional.isPresent()) {
                 boolean camposValidos = true;
-                for (int i = 0; i < requisicao.getEnderecos().size(); i++) {
-                    if (requisicao.getEnderecos().get(i).getCidade().isEmpty() || requisicao.getEnderecos().get(i).getBairro().isEmpty() || requisicao.getEnderecos().get(i).getRua().isEmpty()) {
+                Universidade universidade = requisicao.toUniversidade(optional.get(), requisicao.getEnderecos());
+                for (int i = 0; i < enderecos.size(); i++) {
+                    enderecos.get(i).setUniversidade(universidade);
+                    if (enderecos.get(i).getCidade().isEmpty() || enderecos.get(i).getBairro().isEmpty() || enderecos.get(i).getRua().isEmpty()) {
                         camposValidos = false;
-                        requisicao.getEnderecos().get(i).setUniversidade(optional.get());
                     }
                 }
                 if (camposValidos) {
-                    System.out.println(requisicao.getEnderecos().get(1).getBairro());
-                    Universidade universidade = requisicao.toUniversidade(optional.get(), requisicao.getEnderecos());
                     this.universidadeRepository.save(universidade);
-                    System.out.println(universidade.getEnderecos().get(0).getBairro());
-                    for (Endereco endereco : universidade.getEnderecos()) {
-                        System.out.println(endereco.getBairro());
+                    List<Endereco> todosEnderecos = this.enderecoRepository.findAll();
+                    List<Endereco> deletar = new ArrayList<>();
+                    int cont = 0;
+                    for (int i = 0; i < todosEnderecos.size(); i++) {
+                        if (todosEnderecos.get(i).getUniversidade().getId().equals(universidade.getId())) {
+                            if (enderecos.size() > i) {
+                                enderecos.get(cont).setId(todosEnderecos.get(i).getId());
+                                cont++;
+                            } else {
+                                deletar.add(todosEnderecos.get(i));
+                            }
+                        }
+                    }
+                    for (Endereco endereco : enderecos) {
                         this.enderecoRepository.save(endereco);
                     }
-                }
 
-                return new ModelAndView("redirect:/" + id).addObject("mensagem", "Universidade atualizada com sucesso");
+                    for (Endereco endereco : deletar) {
+                        this.enderecoRepository.delete(endereco);
+                    }
+
+                    return new ModelAndView("redirect:/" + id).addObject("mensagem", "Universidade atualizada com sucesso");
+                } else {
+                    return new ModelAndView("alteracao-universidade").addObject("mensagem", "Preeencha todos os campos antes de prosseguir").addObject("listaTipoUniversidade", TipoUniversidade.values());
+                }
             } else {
                 return new ModelAndView("redirect:/").addObject("mensagem", "Universidade não encontrada");
             }
         }
     }
 
-    @GetMapping("/universidade/cadastro/curso")
-    public ModelAndView cadastroCurso(RequisicaoFormCurso requisicao, HttpServletRequest req) {
-        return new ModelAndView("redirect:/").addObject("mensagem", "É necessário ter um cargo de administrador para acessar essa página");
+    @GetMapping("/{id}/excluir")
+    public ModelAndView excluir(@PathVariable Long id, HttpServletRequest request) {
+        if (request.getSession(false) == null) {
+            return new ModelAndView("redirect:/").addObject("mensagem", "É necessário ter um cargo de administrador para realizar essa ação");
+        } else {
+            Optional<Universidade> optional = this.universidadeRepository.findById(id);
+            if (optional.isPresent()) {
+                Universidade universidade = optional.get();
+                List<Endereco> enderecos = universidade.getEnderecos();
+                List<ProjetoPedagogico> projetosPedagogicos = universidade.getProjetosPedagogicos();
+
+                for (Endereco endereco : enderecos) {
+                    this.enderecoRepository.delete(endereco);
+                }
+
+                for (ProjetoPedagogico projetoPedagogico : projetosPedagogicos) {
+                    this.projetoPedagogicoRepository.delete(projetoPedagogico);
+                }
+
+                universidadeRepository.delete(universidade);
+
+                return new ModelAndView("redirect:/").addObject("sucesso", "Universidade foi excluida com sucesso");
+            } else {
+                return new ModelAndView("redirect:/").addObject("mensagem", "Universidade não encontrada");
+            }
+        }
     }
 
 }

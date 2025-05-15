@@ -6,9 +6,28 @@
 
     <header th:replace="~{fragments :: header('universidades')}"></header>
 
-    <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/universidade/cadastro/curso}">Cadastrar novo Curso</a>
-    <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/{id}/editar(id = ${universidade.id})}">Editar Universidade</a>
-    <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/{id}/excluir(id = ${universidade.id})}">Excluir universidade</a>
+    <a class="mb-2 btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/{id}/editar(id = ${universidade.id})}">Editar Universidade</a>
+    <button th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#modal">
+        Excluir universidade
+    </button>
+
+    <div class="modal fade" id="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Excluir universidade?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que quer excluir a universidade? Se prosseguir, a ação não poderá ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a th:href="@{/{id}/excluir(id = ${universidade.id})}"><button type="button" class="btn btn-primary">Excluir Universidade</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <h1 th:text="${universidade.nome}"></h1>
 
@@ -19,5 +38,7 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
 </html>

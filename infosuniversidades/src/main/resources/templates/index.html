@@ -18,7 +18,7 @@
                     <li th:text="${universidade.tipo}"></li>
 
                     <div class="enderecos" th:each="endereco, enderecoStatus : *{enderecos}">
-                        <li th:if="${endereco.universidade.id} == ${universidade.id}" th:text="${'Endereco' + (enderecoStatus.index + 1)}"></li>
+                        <li th:if="${endereco.universidade.id} == ${universidade.id}">Endereço: </li>
                         <li th:if="${endereco.universidade.id} == ${universidade.id}" th:text="${endereco.rua + ', ' + endereco.numero + ' - ' + endereco.bairro + ' - ' + endereco.cidade}"></li>
                     </div>
                 </a>
