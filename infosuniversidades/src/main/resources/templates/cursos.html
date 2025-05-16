@@ -1,0 +1,23 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Cursos')}"></head>
+<body>
+<div class="container">
+    <header th:replace="~{fragments :: header('cursos')}"></header>
+
+    <h1>Cursos</h1>
+    <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}" th:classappend="param.mensagem != null ? 'text-danger' : ''" th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
+    <span th:styleappend="${param.sucesso == null ? 'diplay:none;' : ''}" th:classappend="param.sucesso != null ? 'text-success' : ''" th:text="${param.sucesso != null ? param.sucesso : ''}">Mensagem</span>
+    <a class="mb-2 btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/cursos/cadastro}">Cadastrar novo Curso</a>
+
+    <div class="cursos" th:each="curso, cursoStatus : ${cursos}">
+        <ul>
+            <a th:href="@{/cursos/{cursoId}(cursoId = ${curso.id})}">
+                <li th:text="${curso.nome}"></li>
+            </a>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

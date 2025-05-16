@@ -1,15 +1,12 @@
 package br.com.infosuniversidades.controllers;
 
-import br.com.infosuniversidades.dto.RequisicaoFormCurso;
 import br.com.infosuniversidades.dto.RequisicaoFormUniversidade;
 import br.com.infosuniversidades.models.*;
 import br.com.infosuniversidades.repositories.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,7 +19,7 @@ import java.util.*;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Controller
-public class UniversidadesController {
+public class UniversidadeController {
 
     @Autowired
     private UniversidadeRepository universidadeRepository;
@@ -36,12 +33,10 @@ public class UniversidadesController {
     @Autowired
     private ProjetoPedagogicoRepository projetoPedagogicoRepository;
 
-    @Autowired
-    private CursoRepository cursoRepository;
-
     @GetMapping("")
     public ModelAndView index(HttpServletRequest req) {
-        List<Universidade> universidades = this.universidadeRepository.findAll(); // retorna lista com todas as universidades presentes no banco de dados
+        List<Universidade> universidades = this.universidadeRepository.findAll();// retorna lista com todas as universidades presentes no banco de dados
+        Collections.sort(universidades, Comparator.comparing(Universidade::getNome));
         ModelAndView mv = new ModelAndView("index");
         mv.addObject("universidades", universidades);
         List<Endereco> enderecos = this.enderecoRepository.findAll();
@@ -241,7 +236,7 @@ public class UniversidadesController {
 
     @GetMapping("/{id}/excluir")
     public ModelAndView excluir(@PathVariable Long id, HttpServletRequest request) {
-        if (request.getSession(false) == null) {
+        if (request.getSession(false) == null || !request.getSession(false).getAttribute("role").equals("ADM")) {
             return new ModelAndView("redirect:/").addObject("mensagem", "É necessário ter um cargo de administrador para realizar essa ação");
         } else {
             Optional<Universidade> optional = this.universidadeRepository.findById(id);

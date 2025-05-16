@@ -12,7 +12,8 @@ public class Curso {
     private long id;
     @Column(nullable = false)
     private String nome;
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String descricao;
     @ManyToMany(mappedBy = "cursos")
     private List<Universidade> universidade;

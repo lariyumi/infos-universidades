@@ -1,0 +1,35 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Edição de Curso')}"></head>
+<body>
+<div class="container">
+
+  <header th:replace="~{fragments :: header('cursos')}"></header>
+
+  <h1>Cadastro de Curso</h1>
+
+  <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}"
+        th:classappend="param.mensagem != null ? 'text-danger' : ''"
+        th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
+
+  <form th:object="${requisicaoFormCurso}" th:action="@{/cursos/{cursoId}/editar(cursoId = ${id})}" method="POST">
+    <div class="form-group mb-2 mt-2">
+      <label class="form-label">Nome</label>
+      <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{nome}"
+             placeholder="Digite o nome do curso">
+      <div class="invalid-feedback" th:errors="*{nome}"></div>
+    </div>
+    <div class="form-group mb-2">
+      <label class="form-label">Descrição:</label>
+      <textarea class="form-control" th:erroclass="is-invalid" th:field="*{descricao}" rows="5" cols="30"></textarea>
+      <div class="invalid-feedback" th:errors="*{descricao}"></div>
+    </div>
+    <div class="form-group mb-2" th:each="universidade, universidadeStatus : ${universidades}">
+      <input type="checkbox" th:field="*{universidades}" th:value="${universidade.id}" th:text="${universidade.nome}">
+    </div>
+    <button class="btn btn-primary mt-3" type="submit">Cadastrar Curso</button>
+  </form>
+
+
+</div>
+</body>

@@ -8,7 +8,7 @@
         <h1>Universidades</h1>
         <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}" th:classappend="param.mensagem != null ? 'text-danger' : ''" th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
         <span th:styleappend="${param.sucesso == null ? 'diplay:none;' : ''}" th:classappend="param.sucesso != null ? 'text-success' : ''" th:text="${param.sucesso != null ? param.sucesso : ''}">Mensagem</span>
-        <a class="mb-2" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/universidade/cadastro}">Cadastrar nova Universidade</a>
+        <a class="mb-2 btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/universidade/cadastro}">Cadastrar nova Universidade</a>
 
         <div class="universidades" th:each="universidade, universidadeStatus : *{universidades}">
             <ul>

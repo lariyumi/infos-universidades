@@ -49,6 +49,9 @@
                        th:field="*{enderecos[__${enderecoStatus.index}__].numero}"
                        placeholder="Digite o número da universidade">
                 <div class="invalid-feedback" th:errors="*{enderecos[__${enderecoStatus.index}__].numero}"></div>
+                <button class="btn btn-danger remover-endereco" type="button"
+                        th:attr="data-id=${enderecoStatus.index}"><img
+                        src="../static/images/menos.png" width="50px" th:src="@{/images/menos.png}"></button>
             </div>
         </div>
         <button class="btn btn-primary" type="button" id="addNovosCampos"><img src="../static/images/mais.png"

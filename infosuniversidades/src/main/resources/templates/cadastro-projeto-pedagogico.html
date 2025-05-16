@@ -1,0 +1,26 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments :: head('Mapa das Universidades de SP - Cadastro de Projeto Pedagógico')}"></head>
+<body>
+<div class="container">
+
+  <header th:replace="~{fragments :: header('cursos')}"></header>
+
+  <h1>Cadastro de Projetos Pedagógicos</h1>
+
+  <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}"
+        th:classappend="param.mensagem != null ? 'text-danger' : ''"
+        th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
+
+  <form th:object="${requisicaoFormProjetoPedagogico}" th:action="@{/{cursoId}/{universidadeId}/cadastro(cursoId = ${cursoId}, universidadeId = ${universidadeId})}" method="POST">
+    <div class="form-group mb-2 mt-2">
+      <label class="form-label">Link</label>
+      <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{link}"
+             placeholder="Digite o link do projeto pedagógico do curso">
+      <div class="invalid-feedback" th:errors="*{link}"></div>
+    </div>
+    <button class="btn btn-primary mt-3" type="submit">Cadastrar Projeto Pedagógico</button>
+  </form>
+
+</div>
+</body>
