@@ -42,30 +42,32 @@
     <h2>Universidades que possuem esse curso: </h2>
     <ul th:each="universidade, universidadeStatus : ${universidades}">
         <li th:text="${universidade.nome}"></li>
-<!--        <a class="btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:if="${projetosPedagogicos.isEmpty()}" th:href="@{/{cursoId}/{universidadeId}/cadastro(cursoId = ${curso.id}, universidadeId = ${universidade.id})}">Adicionar Projeto Pedagógico dessa Universidade</a>-->
-<!--        <a th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:each="projetoPedagogico : ${projetosPedagogicos}" class="btn btn-primary" th:unless="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:href="@{/{cursoId}/{universidadeId}/cadastro(cursoId = ${curso.id}, universidadeId = ${universidade.id})}">Adicionar Projeto Pedagógico dessa Universidade</a>-->
+        <a class="btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:if="${!temProjeto[universidade.id]}" th:href="@{/cursos/{cursoId}/universidade/{universidadeId}/cadastro(cursoId = ${curso.id}, universidadeId = ${universidade.id})}">Adicionar Projeto Pedagógico dessa Universidade</a>
         <p th:each="projetoPedagogico : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:text="${projetoPedagogico.link}"></p>
-<!--        <button th:each="projetoPedagogico, projetoPedagogicoStatus : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" th:attr="data-bs-target='#modalProjetoPedagogico${projetoPedagogicoStatus.index}'">-->
-<!--            Excluir Projeto Pedagógico-->
-<!--        </button>-->
+        <button th:each="projetoPedagogico, projetoPedagogicoStatus : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" th:attr="data-bs-target='#modalProjetoPedagogico' + ${projetoPedagogico.id}">
+            Excluir Projeto Pedagógico
+        </button>
+        <a th:each="projetoPedagogico, projetoPedagogicoStatus : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/projeto-pedagogico/{projetoPedagogicoId}/editar(projetoPedagogicoId = ${projetoPedagogico.id})}" class="btn btn-primary mb-2">
+            Alterar Projeto Pedagógico
+        </a>
 
-<!--        <div th:each="projetoPedagogico, projetoPedagogicoStatus : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" class="modal fade" th:id="${'modalProjetoPedagogico' + projetoPedagogicoStatus.index}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modalLabel" aria-hidden="true">-->
-<!--            <div class="modal-dialog">-->
-<!--                <div class="modal-content">-->
-<!--                    <div class="modal-header">-->
-<!--                        <h5 class="modal-title" id="modalLabelProjetoPedagogico">Excluir Projeto Pedagogico?</h5>-->
-<!--                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                    </div>-->
-<!--                    <div class="modal-body">-->
-<!--                        <p>Tem certeza que quer excluir o projeto pedagógico? Se prosseguir, a ação não poderá ser desfeita.</p>-->
-<!--                    </div>-->
-<!--                    <div class="modal-footer">-->
-<!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>-->
-<!--                        <a th:href="@{/projeto-pedagogico/{id}/excluir(id = ${projetoPedagogico.id})}"><button type="button" class="btn btn-primary">Excluir Curso</button></a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div th:each="projetoPedagogico, projetoPedagogicoStatus : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" class="modal fade" th:id="${'modalProjetoPedagogico' + projetoPedagogico.id}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelProjetoPedagogico">Excluir Projeto Pedagogico?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que quer excluir o projeto pedagógico? Se prosseguir, a ação não poderá ser desfeita.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <a th:href="@{/projeto-pedagogico/{id}/excluir(id = ${projetoPedagogico.id})}"><button type="button" class="btn btn-primary">Excluir Curso</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </ul>
 
 </div>

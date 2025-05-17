@@ -13,17 +13,18 @@
         <div class="universidades" th:each="universidade, universidadeStatus : *{universidades}">
             <ul>
                 <a th:href="@{/{universidadeId}(universidadeId = ${universidade.id})}">
-                    <li th:text="${universidade.nome}"></li>
-                    <li th:text="${universidade.site}"></li>
-                    <li th:text="${universidade.tipo}"></li>
+                    <b><li class="nomeUniversidade" th:text="${universidade.nome}"></li></b>
+                    <b>Site: </b><li th:text="${universidade.site}"></li>
+                    <b>Tipo: </b><li th:text="${universidade.tipo}"></li>
 
                     <div class="enderecos" th:each="endereco, enderecoStatus : *{enderecos}">
-                        <li th:if="${endereco.universidade.id} == ${universidade.id}">Endereço: </li>
+                        <li th:if="${endereco.universidade.id} == ${universidade.id}"><b>Endereço: </b></li>
                         <li th:if="${endereco.universidade.id} == ${universidade.id}" th:text="${endereco.rua + ', ' + endereco.numero + ' - ' + endereco.bairro + ' - ' + endereco.cidade}"></li>
                     </div>
                 </a>
             </ul>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -102,6 +102,16 @@ public class CursoController {
 
             List<ProjetoPedagogico> projetosPedagogicos = curso.get().getProjetosPedagogicos();
             mv.addObject("projetosPedagogicos", projetosPedagogicos);
+
+            Map<Long, Boolean> temProjeto = new HashMap<>();
+            for (Universidade universidade : universidades) {
+                if (projetosPedagogicos.stream().anyMatch(pp -> pp.getUniversidade().getId().equals(universidade.getId()))) {
+                    temProjeto.put(universidade.getId(), true);
+                } else {
+                    temProjeto.put(universidade.getId(), false);
+                }
+            }
+            mv.addObject("temProjeto", temProjeto);
         } else {
             return new ModelAndView("redirect:/cursos").addObject("mensagem", "Curso não encontrado");
         }
