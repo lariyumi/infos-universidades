@@ -110,10 +110,10 @@ ul {
     .link {
         margin: 20px 40px;
     }
-    .form-label, .form-control {
+    .form-label, .form-control, .form-select {
         margin: 5px 40px;
     }
-    .form-control {
+    .form-control, .form-select {
         width: 80%;
     }
     .checkbox {
@@ -161,7 +161,7 @@ ul {
         margin: 20px 40px;
         text-align: left;
     }
-    .form-control {
+    .form-control, .form-select {
         width: 85%;
     }
 }
@@ -174,15 +174,9 @@ ul {
         grid-auto-rows: auto;
         grid-auto-flow: dense;
     }
-    .form-control {
+    .form-control, .form-select {
         width: 90%;
     }
-}
-
-@media (min-width: 992px) {
-
-
-
 }
 
 @media (min-width: 1200px) {
