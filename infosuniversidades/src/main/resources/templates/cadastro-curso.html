@@ -24,7 +24,7 @@
             <textarea class="form-control" th:erroclass="is-invalid" th:field="*{descricao}" rows="5" cols="30"></textarea>
             <div class="invalid-feedback" th:errors="*{descricao}"></div>
         </div>
-        <div class="form-group mb-2" th:each="universidade, universidadeStatus : ${universidades}">
+        <div class="form-group mb-2 checkbox" th:each="universidade, universidadeStatus : ${universidades}">
             <input type="checkbox" th:field="*{universidades}" th:value="${universidade.id}" th:text="${universidade.nome}">
         </div>
         <button class="btn btn-primary mt-3" type="submit">Cadastrar Curso</button>

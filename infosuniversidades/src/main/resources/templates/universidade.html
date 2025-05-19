@@ -6,6 +6,8 @@
 
     <header th:replace="~{fragments :: header('universidades')}"></header>
 
+    <h1 th:text="${universidade.nome}"></h1>
+
     <a class="mb-2 btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:href="@{/{id}/editar(id = ${universidade.id})}">Editar Universidade</a>
     <button th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#modal">
         Excluir universidade
@@ -29,12 +31,10 @@
         </div>
     </div>
 
-    <h1 th:text="${universidade.nome}"></h1>
-
-    <p><b>Site: </b><span th:text="${universidade.site}"></span></p>
-    <p><b>Tipo: </b><span th:text="${universidade.tipo}"></span></p>
+    <p><b>Site: </b><span class="spanSemMargem" th:text="${universidade.site}"></span></p>
+    <p><b>Tipo: </b><span class="spanSemMargem" th:text="${universidade.tipo}"></span></p>
     <div th:each="endereco, enderecoStatus : ${enderecos}">
-        <p><b th:text="'Endereço ' + (${enderecoStatus.index} + 1) + ': '"></b><span th:text="${endereco.rua} + ', ' + ${endereco.numero} + ' - ' + ${endereco.bairro} + ' - ' + ${endereco.cidade}"></span></p>
+        <p><b th:text="'Endereço ' + (${enderecoStatus.index} + 1) + ': '"></b><span class="spanSemMargem" th:text="${endereco.rua} + ', ' + ${endereco.numero} + ' - ' + ${endereco.bairro} + ' - ' + ${endereco.cidade}"></span></p>
     </div>
 
 </div>

@@ -13,7 +13,7 @@
     <div class="cursos" th:each="curso, cursoStatus : ${cursos}">
         <ul>
             <a th:href="@{/cursos/{cursoId}(cursoId = ${curso.id})}">
-                <li th:text="${curso.nome}"></li>
+                <li class="nomeCursos" th:text="${curso.nome}"></li>
             </a>
         </ul>
     </div>

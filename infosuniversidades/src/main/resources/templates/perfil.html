@@ -8,13 +8,13 @@
   <h1>Perfil</h1>
   <span th:styleappend="${param.mensagem == null ? 'diplay:none;' : ''}" th:classappend="param.mensagem != null ? 'text-danger' : ''" th:text="${param.mensagem != null ? param.mensagem : ''}">Mensagem</span>
   <span th:styleappend="${param.sucesso == null ? 'diplay:none;' : ''}" th:classappend="param.sucesso != null ? 'text-success' : ''" th:text="${param.sucesso != null ? param.sucesso : ''}">Mensagem</span>
-  <h2>Bem-vindo(a) <span th:text="${session.nome}"></span></h2>
+  <h2>Bem-vindo(a) <span class="spanSemMargem" th:text="${session.nome}"></span></h2>
 
-  <p><b>Nome: </b><span th:text="${session.nome}"></span></p>
-  <p><b>E-mail: </b><span th:text="${session.email}"></span></p>
+  <p><b>Nome: </b><span class="spanSemMargem" th:text="${session.nome}"></span></p>
+  <p><b>E-mail: </b><span class="spanSemMargem" th:text="${session.email}"></span></p>
 
-  <a th:href="@{/perfil/alterar-perfil}">Editar informações</a>
-  <a th:href="@{/perfil/sair}">Sair do Perfil</a>
+  <a class="btn btn-primary" th:href="@{/perfil/alterar-perfil}">Editar informações</a>
+  <a class="btn btn-primary" th:href="@{/perfil/sair}">Sair do Perfil</a>
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>

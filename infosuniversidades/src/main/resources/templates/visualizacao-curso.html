@@ -41,9 +41,9 @@
 
     <h2>Universidades que possuem esse curso: </h2>
     <ul th:each="universidade, universidadeStatus : ${universidades}">
-        <li th:text="${universidade.nome}"></li>
+        <b><li th:text="${universidade.nome}"></li></b>
+        <p class="pp" th:each="projetoPedagogico : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:text="'Link para o Projeto Pedagógico do curso: ' + ${projetoPedagogico.link}"></p>
         <a class="btn btn-primary" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" th:if="${!temProjeto[universidade.id]}" th:href="@{/cursos/{cursoId}/universidade/{universidadeId}/cadastro(cursoId = ${curso.id}, universidadeId = ${universidade.id})}">Adicionar Projeto Pedagógico dessa Universidade</a>
-        <p th:each="projetoPedagogico : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:text="${projetoPedagogico.link}"></p>
         <button th:each="projetoPedagogico, projetoPedagogicoStatus : ${projetosPedagogicos}" th:if="${projetoPedagogico.universidade.id == universidade.id && projetoPedagogico != null}" th:styleappend="${usuario != null && usuario.tipo.toString().equals('ADM') ? '' : 'display: none;'}" type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" th:attr="data-bs-target='#modalProjetoPedagogico' + ${projetoPedagogico.id}">
             Excluir Projeto Pedagógico
         </button>
